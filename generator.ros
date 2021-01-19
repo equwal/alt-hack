@@ -3,12 +3,12 @@
 #|
 exec ros -Q -- $0 "$@"
 |#
-;;; This file (c) Spenser Truex 2019
+;;; This file (c) Spenser Truex 2021
 ;;; MIT license.
 
 (progn ;;init forms
   (ros:ensure-asdf)
-  #+quicklisp(ql:quickload '(:alexandria :str :uiop :let-over-lambda)
+  #+quicklisp(ql:quickload '(:alexandria :uiop)
                            :silent t))
 
 ;;; EXAMPLE USAGE:
@@ -19,7 +19,6 @@ exec ros -Q -- $0 "$@"
    :alexandria
    :flatten
    :compose)
-  (:import-from :str :concat)
   (:import-from
    :uiop
    :copy-file
@@ -100,7 +99,7 @@ exec ros -Q -- $0 "$@"
     (progn (pprint-lines
             "generator.ros OPTIONS* {SHOW | SPEC+}")
            (format t "These are valid OPTIONS: ~{~A ~}~%"
-                   (mapcar #'(lambda (f) (concat "--" f))
+                   (mapcar #'(lambda (f) (concatenate 'string "--" f))
                            *formats*))
            (pprint-lines "SPEC should be a list of:")
            (pprint-helpful-groups)
@@ -137,13 +136,16 @@ exec ros -Q -- $0 "$@"
   (dolist (arg ufolders)
     (dolist (weight *weights*)
       (dolist (f (uiop:directory-files
-                  (concat "glyphs/" arg "/"
-                          (string-downcase weight) "/")))
+                  (concatenate 'string "glyphs/" arg "/"
+                               (string-downcase weight) "/")))
         (copy-file f
-                   (concat "Hack/source/Hack-" weight
-                           ".ufo/glyphs/"
-                           (concat (pathname-name f) "."
-                                   (pathname-type f))))))))
+                   (concatenate 'string
+                                "Hack/source/Hack-"
+                                weight
+                                ".ufo/glyphs/"
+                                (pathname-name f)
+                                "."
+                                (pathname-type f)))))))
 (defun make-it (&optional subcommand)
   ;; Cannot use uiop:launch-program since it is asynchronous.
   (run-program (if subcommand
@@ -181,7 +183,8 @@ exec ros -Q -- $0 "$@"
            (cons
             mat
             (code-char (read-from-string
-                        (concat "#x"
+                        (concatenate 'string
+                                     "#x"
                                 (subseq mat 1 (search "-" mat))))))))))))
 (defun format-parser (argv)
   (when argv
