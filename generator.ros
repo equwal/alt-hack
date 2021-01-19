@@ -14,18 +14,7 @@ exec ros -Q -- $0 "$@"
 ;;; EXAMPLE USAGE:
 ;;; cd alt-hack && ./generator.ros curve dot slabi
 (defpackage :ros.script.generator.3783095582
-  (:use :cl)
-  (:import-from
-   :alexandria
-   :flatten
-   :compose)
-  (:import-from
-   :uiop
-   :copy-file
-   :resolve-symlinks
-   :directory-files
-   :subdirectories
-   :run-program))
+  (:use :cl))
 (in-package :ros.script.generator.3783095582)
 (defvar *weights* '("Bold" "BoldItalic" "Italic" "Regular"))
 
@@ -123,7 +112,7 @@ exec ros -Q -- $0 "$@"
   (format t "~{~A~%~}" strings))
 
 (defun remove-hints ()
-  (let ((files (directory-files #P"Hack/postbuild_processing/tt-hinting")))
+  (let ((files (uiop:directory-files #P"Hack/postbuild_processing/tt-hinting")))
     (dolist (f files)
       (with-open-file (si f :direction :input)
         (with-open-file (so f :direction :output
@@ -138,7 +127,7 @@ exec ros -Q -- $0 "$@"
       (dolist (f (uiop:directory-files
                   (concatenate 'string "glyphs/" arg "/"
                                (string-downcase weight) "/")))
-        (copy-file f
+        (uiop:copy-file f
                    (concatenate 'string
                                 "Hack/source/Hack-"
                                 weight
@@ -148,7 +137,7 @@ exec ros -Q -- $0 "$@"
                                 (pathname-type f)))))))
 (defun make-it (&optional subcommand)
   ;; Cannot use uiop:launch-program since it is asynchronous.
-  (run-program (if subcommand
+  (uiop:run-program (if subcommand
                       (list "make" subcommand)
                       "make")
                   :output *standard-output*
@@ -174,7 +163,7 @@ exec ros -Q -- $0 "$@"
            (dolist (p letter-alist)
              (format t "~T~A~T~A~%"
                      (string (cdr p)) (car p)))))
-    (let ((dirs (subdirectories "glyphs")))
+    (let ((dirs (uiop:subdirectories "glyphs")))
       (pprint-letters
        (loop
          for d in dirs
@@ -219,7 +208,7 @@ exec ros -Q -- $0 "$@"
       (if (should-test argv)
           test
           (let ((formats (format-parser argv)))
-            (let ((argv (mapcar (compose #'intern #'string-upcase)
+            (let ((argv (mapcar (lambda (g) (intern (string-upcase g)))
                                 (nthcdr (length formats) argv)))
                   (formats (or formats "ttf woff woff2")))
               (if (and argv (string= "SHOW" (string-upcase (car argv))))
