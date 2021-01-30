@@ -1,3 +1,9 @@
+ATTENÇÃO
+
+This script is trash, and is used to generate all the fonts hosted at https://equwal.com/release.html, along with some other cheap hacks.
+
+There is no reason why you should need to use it, but if you do anyway, good luck (don't expect me to help you, though maybe I will if I think it seems fun)!
+
 # alt-hack
 
 [![Build Status](https://semaphoreci.com/api/v1/sourcefoundry/alt-hack/branches/master/badge.svg)](https://semaphoreci.com/sourcefoundry/alt-hack)
