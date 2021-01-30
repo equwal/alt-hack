@@ -1,4 +1,4 @@
-ATTENÇÃO
+# ATTENÇÃO
 
 This script is trash, and is used to generate all the fonts hosted at https://equwal.com/release.html, along with some other cheap hacks.
 
